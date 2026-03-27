@@ -1,0 +1,63 @@
+kind: circuit
+version: v1
+metadata:
+  name: er
+  description: "Entity Resolution — match failures to tickets and PRs"
+
+# Base ER circuit: 5 nodes, linear with early exit on dedup/mismatch.
+#
+# Consumer overlays add domain-specific prompts and config.
+# This base defines the topology only.
+
+handler_type: transformer
+
+nodes:
+  - name: recall
+    description: "Check if this failure has already been ingested (dedup)"
+    handler: llm
+    edges:
+      - name: recall-new
+        to: match-jira
+        when: "output.is_new == true"
+      - name: recall-dup
+        to: done
+        when: "output.is_new == false"
+
+  - name: match-jira
+    description: "Semantic match: which Jira ticket explains this failure?"
+    handler: llm
+    edges:
+      - name: jira-matched
+        to: match-pr
+        when: "output.confidence >= 0.5"
+      - name: jira-nomatch
+        to: done
+        when: "output.confidence < 0.5"
+
+  - name: match-pr
+    description: "Semantic match: which GitHub PR fixes this ticket?"
+    handler: llm
+    edges:
+      - name: pr-found
+        to: verify
+      - name: pr-notfound
+        to: classify
+        when: "output.confidence < 0.3"
+
+  - name: verify
+    description: "Cross-check: do timestamps, versions, components align?"
+    handler: llm
+    edges:
+      - name: verified
+        to: classify
+        when: "output.aligned == true"
+      - name: misaligned
+        to: done
+        when: "output.aligned == false"
+
+  - name: classify
+    description: "Extract defect_type, category, component from matched evidence"
+    handler: llm
+    edges:
+      - name: classified
+        to: done

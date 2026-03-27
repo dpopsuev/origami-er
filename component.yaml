@@ -1,0 +1,10 @@
+kind: schematic
+component: origami-er
+module: github.com/dpopsuev/origami-er
+namespace: er
+version: "1.0.0"
+description: "Entity Resolution — LLM-driven matching across RP, Jira, GitHub"
+hooks: "Hooks()"
+resolver: SchematicResolver
+needs:
+  origami: ">=0.2.0"
