@@ -2,19 +2,19 @@ module github.com/dpopsuev/origami-er
 
 go 1.25.7
 
-require github.com/dpopsuev/origami v0.2.0
+require github.com/dpopsuev/origami v0.8.0
 
 require (
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.5.0 // indirect
-	github.com/dpopsuev/bugle v0.14.0 // indirect
+	github.com/dpopsuev/troupe v0.1.0 // indirect
 	github.com/expr-lang/expr v1.17.8 // indirect
 	github.com/google/jsonschema-go v0.4.2 // indirect
 	github.com/jedib0t/go-pretty/v6 v6.7.8 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
-	github.com/modelcontextprotocol/go-sdk v1.3.1 // indirect
+	github.com/modelcontextprotocol/go-sdk v1.4.1 // indirect
 	github.com/segmentio/asm v1.1.3 // indirect
-	github.com/segmentio/encoding v0.5.3 // indirect
+	github.com/segmentio/encoding v0.5.4 // indirect
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
 	golang.org/x/oauth2 v0.34.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
@@ -25,5 +25,3 @@ require (
 )
 
 replace github.com/dpopsuev/origami => ../origami
-
-replace github.com/dpopsuev/bugle => ../bugle

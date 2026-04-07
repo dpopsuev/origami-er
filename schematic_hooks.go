@@ -27,18 +27,23 @@ func SchematicResolver() circuit.AssetResolver {
 	}
 }
 
-// Hooks returns the SessionHooks for the ER schematic.
-func Hooks() engine.SessionHooks {
-	return engine.SessionHooks{
-		CreateSession: createSession,
-		FormatReport: func(result any) (string, any, error) {
-			// ER results are the matched/promoted records — return as-is.
-			return fmt.Sprintf("%v", result), result, nil
-		},
-	}
+// erSessionFactory implements engine.SessionFactory for the ER schematic.
+type erSessionFactory struct{}
+
+func (f *erSessionFactory) CreateSession(ctx context.Context, params *engine.SessionParams) (*engine.SessionConfig, error) {
+	return createSession(ctx, params)
 }
 
-func createSession(_ context.Context, params engine.SessionParams) (*engine.SessionConfig, error) {
+func (f *erSessionFactory) FormatReport(result any) (string, any, error) {
+	return fmt.Sprintf("%v", result), result, nil
+}
+
+// Factory returns the SessionFactory for the ER schematic.
+func Factory() engine.SessionFactory {
+	return &erSessionFactory{}
+}
+
+func createSession(_ context.Context, params *engine.SessionParams) (*engine.SessionConfig, error) {
 	circuitData := defaultCircuitYAML
 
 	// Load consumer overlay if available in DomainFS.
